@@ -40,7 +40,7 @@ class DevelopersController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'email' => ['required','unique:developers', 'max:255'],
-            'phone' => 'required|max:10',
+            'phone' => ['required', 'max:10'],
         ]);
         if ($validatedData->fails()) {
             return redirect('developers.create')
@@ -87,8 +87,8 @@ class DevelopersController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|max:255',
-            'email' => ['required','unique:developers', 'max:255'],
-            'phone' => 'required|max:10'
+            'email' => ['required','unique:developers,email,'.$id, 'max:255'],
+            'phone' => ['required', 'max:10'],
         ]);
         if ($validatedData->fails()) {
             return redirect('developers.create')
