@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Validator;
+
 use App\Models\Developer;
 
 class DevelopersController extends Controller
@@ -37,16 +39,21 @@ class DevelopersController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $validatedData = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'email' => ['required','unique:developers', 'max:255'],
             'phone' => ['required', 'max:10'],
         ]);
         if ($validatedData->fails()) {
-            return redirect('developers.create')
+            return redirect()->route('developers.create')
                         ->withErrors($validatedData)
                         ->withInput();
         }
+        $validatedData = $request->validate([
+            'name' => 'required|max:255',
+            'email' => ['required','unique:developers', 'max:255'],
+            'phone' => ['required', 'max:10'],
+        ]);
         $data = Developer::create($validatedData);
         return redirect('../dashboard')->with('success', 'Developer is successfully saved');
     }
@@ -85,16 +92,21 @@ class DevelopersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
+        $validatedData = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'email' => ['required','unique:developers,email,'.$id, 'max:255'],
             'phone' => ['required', 'max:10'],
         ]);
         if ($validatedData->fails()) {
-            return redirect('developers.create')
+            return redirect()->route('developers.edit')
                         ->withErrors($validatedData)
                         ->withInput();
         }
+        $validatedData = $request->validate([
+            'name' => 'required|max:255',
+            'email' => ['required','unique:developers,email,'.$id, 'max:255'],
+            'phone' => ['required', 'max:10'],
+        ]);
         Developer::whereId($id)->update($validatedData);
 
         return redirect('../dashboard')->with('success', 'Developer Data is successfully updated');
